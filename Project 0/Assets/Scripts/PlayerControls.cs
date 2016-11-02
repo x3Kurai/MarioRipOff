@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 //Known Issues
 
@@ -144,4 +145,18 @@ public class PlayerControls : MonoBehaviour {
 		Gizmos.color = Color.blue;
 		Gizmos.DrawWireSphere (groundPoint.position, radius);
 	}
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemies")
+        {
+            PlayerDies();
+        }
+
+
+    }
+    void PlayerDies()
+    {
+        SceneManager.LoadScene("Vince"); //Change scene name to TestLevel later
+    }
 }
