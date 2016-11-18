@@ -36,12 +36,11 @@ public class GoombaAI : MonoBehaviour {
     {
         if (col.gameObject.tag == "Player")
         {
-            
+
             float height = col.contacts[0].point.y - weakness.position.y;
 
             if (height > 0)
             {
-                transform.gameObject.tag = "DeadEnemies";
                 Dies();
                 col.rigidbody.AddForce(new Vector2(0, 200)); //float value for how high you bounce off
 

@@ -7,13 +7,30 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControls : MonoBehaviour {
 
+	//movement
 	public float moveSpeed;
-	public float jumpHeight;
 	public bool isGrounded;
+	public float jumpForce;
+	public float jumpTime;
+	public float jumpTimeCounter;
+	public bool stoppedJumping;
+	public bool maxSpeed;
+	public float xValue;
+	
+	public GameObject camera;
+	private CameraControls access;
+	private float cam_xVal;
+	
+	
+	//status
 	public int health;
-	public bool isFF;
+	public bool fireFlower;
+	public int lives;
 
+	//grounded
 	public Transform groundPoint;
+	public Transform groundPointLeft;
+	public Transform groundPointRight;
 	public float radius;
 	public LayerMask groundMask;
 
@@ -25,23 +42,97 @@ public class PlayerControls : MonoBehaviour {
 	void Start() 
 	{	
 		//Control Values
-
 		moveSpeed = 0.0f;
-		jumpHeight = 650.0f;
+		jumpTime = 0.25f;
+		jumpTimeCounter = jumpTime;
+		
+		//status
 		health = 1;
-		isFF = false;
-
+		//lives = 3;
+		fireFlower = false;
+		
+		//ridgedbody
 		rb2D = GetComponent<Rigidbody2D>();
+		
+		//Others
+		access = camera.GetComponent<CameraControls>();
+		cam_xVal = access.cam_xValue;
 	}
 	
 	//Update=============================================================
 	
 	void Update()
+	{	
+		//Checks if Grounded
+		if(Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) ||
+			Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) ||
+			Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
+		{
+			isGrounded = true;		
+		}
+		
+		if(!Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) &&
+			!Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) &&
+			!Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
+		{
+			isGrounded = false;		
+		}
+		
+		if(isGrounded)
+			jumpTimeCounter = jumpTime;
+		
+		
+		//Checks if NotMario is running at Max Speed
+		//if(moveSpeed == 10.0f || moveSpeed == -10.0f)
+		//	maxSpeed = true;
+		//if(moveSpeed != 10.0f || moveSpeed != -10.0f)
+		//	maxSpeed = false;
+		
+		
+		//Jumping
+				
+		//Max Jump Height depending on NotMario's speed.
+		isMaxSpeed();
+		
+		//Makes NotMario's jump for a longer duration if 'Z' is held down.
+		if(Input.GetKeyDown(KeyCode.X))
+		{
+			if(isGrounded)
+			{
+				rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+				stoppedJumping = false;
+			}
+		}
+		if(Input.GetKey(KeyCode.X) && !stoppedJumping)
+		{
+			if(jumpTimeCounter > 0)
+			{
+				rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+				jumpTimeCounter -= Time.deltaTime;
+			}
+		}
+		if(Input.GetKeyUp(KeyCode.X))
+		{
+			jumpTimeCounter = 0;
+			stoppedJumping = true;
+		}
+		
+	if(health == 0 || transform.position.y < -1.5f)
 	{
-		isGrounded = Physics2D.OverlapCircle(groundPoint.position, radius, groundMask);
+		//Currently using the scene "Gregg" as the main scene
+		SceneManager.LoadScene("Gregg");
+		lives--;
+	}
 
-
-        //Acceleration, deceleration
+        //End of Update()
+	}
+	
+	//FixedUpdate=============================================================
+	
+	void FixedUpdate()
+	{
+		
+		//Acceleration, deceleration
 
         if(Input.GetKey(KeyCode.RightArrow))
             moveSpeed = moveSpeed + 0.2f;
@@ -49,9 +140,9 @@ public class PlayerControls : MonoBehaviour {
             moveSpeed = moveSpeed - 0.2f;
 		
 		
-        if(!Input.anyKey && moveSpeed > 0.0f && moveSpeed > 0.2f)
+        if(!Input.GetKey(KeyCode.RightArrow) && moveSpeed > 0.0f && moveSpeed > 0.2f)
             moveSpeed = moveSpeed - 0.2f;
-        if(!Input.anyKey && moveSpeed < 0.0f && moveSpeed < -0.2f)
+        if(!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < 0.0f && moveSpeed < -0.2f)
             moveSpeed = moveSpeed + 0.2f;
 		
         if(!Input.anyKey && moveSpeed > 0.0f && moveSpeed < 0.2f)
@@ -61,29 +152,33 @@ public class PlayerControls : MonoBehaviour {
 
 
         //Speed cap
-
-        if(moveSpeed > 5.0f)
-            moveSpeed = 5.0f;
-        if(moveSpeed < -5.0f)
-            moveSpeed = -5.0f;
+		
+		if(!Input.GetKey(KeyCode.Z))
+		{
+			if(moveSpeed > 5.0f)
+				moveSpeed = 5.0f;
+			if(moveSpeed < -5.0f)
+				moveSpeed = -5.0f;
+		}
+		if(Input.GetKey(KeyCode.Z))
+		{
+			if(moveSpeed > 10.0f)
+				moveSpeed = 10.0f;
+			if(moveSpeed < -10.0f)
+				moveSpeed = -10.0f;
+		}
 
 
 		//left and right movement
+		
+		if((xValue + 19.0f) <= cam_xVal)
+			moveSpeed = 1.0f;
 	
 		Vector2 moveDir = new Vector2(moveSpeed, rb2D.velocity.y);
-	    rb2D.velocity = moveDir;
-
-
+		rb2D.velocity = moveDir;
+		
+		
 		//Jumping
-
-		if(isGrounded) 
-		{
-			if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Space)) 
-			{
-				rb2D.AddForce(new Vector2(0, jumpHeight));
-			}
-		}
-
 
 		//Flips the character depending on their horizontal movement
 
@@ -95,15 +190,14 @@ public class PlayerControls : MonoBehaviour {
 		{
 			transform.localScale = new Vector3(-1.0f, 1.0f, -1.0f);
 		}
-
-        //#End of Update()
+		
+		//End of FixedUpdate()
 	}
 	
-	//FixedUpdate=============================================================
-	
-	void FixedUpdate()
-	{
-		
+	void LateUpdate()
+	{	
+		xValue = transform.position.x;
+		cam_xVal = access.cam_xValue;
 	}
 	
 	
@@ -126,16 +220,32 @@ public class PlayerControls : MonoBehaviour {
 				health++;
 			}
 		}
-		if(other.gameObject.CompareTag("Enemies"))
-		{
-			health--;
-			other.gameObject.SetActive(false);
-			if(health == 0)
-			{
-				//pause game
-				//death
-			}
-		}
+	}
+		
+	//void OnCollisionEnter2D(Collision2D col)
+	//{
+	//	if(col.gameObject.tag == "Enemies")
+	//	{
+	//		PlayerDies();
+	//	}
+	//}
+	
+	//void PlayerDies()
+	//{
+	//	SceneManager.LoadScene("Gregg");
+	//}
+	
+	void isMaxSpeed()
+	{
+		//Checks if NotMario is running at Max Speed
+		if(moveSpeed == 10.0f || moveSpeed == -10.0f)
+			maxSpeed = true;
+		if(moveSpeed != 10.0f || moveSpeed != -10.0f)
+			maxSpeed = false;
+		if(maxSpeed)
+			jumpForce = 16;
+		if(!maxSpeed)
+			jumpForce = 15;
 	}
 
     //Displays the Ground Point
@@ -145,18 +255,4 @@ public class PlayerControls : MonoBehaviour {
 		Gizmos.color = Color.blue;
 		Gizmos.DrawWireSphere (groundPoint.position, radius);
 	}
-
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Enemies")
-        {
-            PlayerDies();
-        }
-
-
-    }
-    void PlayerDies()
-    {
-        SceneManager.LoadScene("Vince"); //Change scene name to TestLevel later
-    }
 }
