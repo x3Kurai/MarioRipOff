@@ -38,6 +38,7 @@ public class GoombaAI : MonoBehaviour {
         {
 
             float height = col.contacts[0].point.y - weakness.position.y;
+			transform.gameObject.tag = "DeadEnemies";
 
             if (height > 0)
             {

@@ -16,6 +16,7 @@ public class PlayerControls : MonoBehaviour {
 	public bool stoppedJumping;
 	public bool maxSpeed;
 	public float xValue;
+
 	
 	public GameObject camera;
 	private CameraControls access;
@@ -24,6 +25,7 @@ public class PlayerControls : MonoBehaviour {
 	
 	//status
 	public int health;
+	public float height;
 	public bool fireFlower;
 	public int lives;
 
@@ -49,6 +51,7 @@ public class PlayerControls : MonoBehaviour {
 		//status
 		health = 1;
 		//lives = 3;
+		height = 1.0f;
 		fireFlower = false;
 		
 		//ridgedbody
@@ -63,20 +66,21 @@ public class PlayerControls : MonoBehaviour {
 	
 	void Update()
 	{	
+		checkGrounded ();
 		//Checks if Grounded
-		if(Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) ||
-			Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) ||
-			Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
-		{
-			isGrounded = true;		
-		}
+		//if(Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) ||
+		//	Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) ||
+		//	Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
+		//{
+		//	isGrounded = true;		
+		//}
 		
-		if(!Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) &&
-			!Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) &&
-			!Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
-		{
-			isGrounded = false;		
-		}
+		//if(!Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) &&
+		//	!Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) &&
+		//	!Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
+		//{
+		//	isGrounded = false;		
+		//}
 		
 		if(isGrounded)
 			jumpTimeCounter = jumpTime;
@@ -171,7 +175,7 @@ public class PlayerControls : MonoBehaviour {
 
 		//left and right movement
 		
-		if((xValue + 19.0f) <= cam_xVal)
+		if((xValue + 15.0f) <= cam_xVal)
 			moveSpeed = 1.0f;
 	
 		Vector2 moveDir = new Vector2(moveSpeed, rb2D.velocity.y);
@@ -184,11 +188,11 @@ public class PlayerControls : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
-			transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+			transform.localScale = new Vector3(1.0f, height, 1.0f);
 		}
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
-			transform.localScale = new Vector3(-1.0f, 1.0f, -1.0f);
+			transform.localScale = new Vector3(-1.0f, height, -1.0f);
 		}
 		
 		//End of FixedUpdate()
@@ -203,37 +207,47 @@ public class PlayerControls : MonoBehaviour {
 	
 	//Misc====================================================================
 	
-	void OnTriggerEnter(Collider other)
-	{
-		if(other.gameObject.CompareTag("Mushroom"))
-		{
-			other.gameObject.SetActive(false);
-			if(health == 1)
-			{
-				health++;
-			}
-		}
-		if(other.gameObject.CompareTag("FireFlower"))
-		{
-			if(health == 1)
-			{
-				health++;
-			}
-		}
-	}
-		
-	//void OnCollisionEnter2D(Collision2D col)
+	//void OnTriggerEnter(Collider other)
 	//{
-	//	if(col.gameObject.tag == "Enemies")
+	//	if(other.gameObject.CompareTag("Mushroom"))
 	//	{
-	//		PlayerDies();
+	//		other.gameObject.SetActive(false);
+	//		if(health == 1)
+	//		{
+	//			health++;
+	//		}
+	//	}
+	//	if(other.gameObject.CompareTag("FireFlower"))
+	//	{
+	//		if(health == 1)
+	//		{
+	//			health++;
+	//		}
 	//	}
 	//}
+		
+	void OnCollisionEnter2D(Collision2D col)
+	{
+		if(col.gameObject.tag == "Enemies")
+		{
+			PlayerHit();
+		}
+
+		if (col.gameObject.tag == "Mushroom") {
+			health = 2;
+			height = 2.0f;
+		}
+	}
 	
-	//void PlayerDies()
-	//{
-	//	SceneManager.LoadScene("Gregg");
-	//}
+	void PlayerHit()
+	{
+		if (health == 2) {
+			health--;
+			height = 1.0f;
+		}
+		else
+			SceneManager.LoadScene("Gregg");
+	}
 	
 	void isMaxSpeed()
 	{
@@ -254,5 +268,18 @@ public class PlayerControls : MonoBehaviour {
 	{
 		Gizmos.color = Color.blue;
 		Gizmos.DrawWireSphere (groundPoint.position, radius);
+	}
+
+	void checkGrounded()
+	{
+		//Checks if Grounded
+		if (Physics2D.OverlapCircle (groundPoint.position, radius, groundMask) ||
+		   Physics2D.OverlapCircle (groundPointLeft.position, radius, groundMask) ||
+		   Physics2D.OverlapCircle (groundPointRight.position, radius, groundMask))
+		{
+			isGrounded = true;		
+		} 
+		else
+			isGrounded = false;
 	}
 }
