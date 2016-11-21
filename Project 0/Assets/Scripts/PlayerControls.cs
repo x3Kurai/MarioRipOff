@@ -91,13 +91,27 @@ public class PlayerControls : MonoBehaviour {
 		//	maxSpeed = true;
 		//if(moveSpeed != 10.0f || moveSpeed != -10.0f)
 		//	maxSpeed = false;
+
 		
-		
+	if(transform.position.y < -1.5f)
+	{
+		//Currently using the scene "Gregg" as the main scene
+		SceneManager.LoadScene("Gregg");
+		lives--;
+	}
+
+        //End of Update()
+	}
+	
+	//FixedUpdate=============================================================
+	
+	void FixedUpdate()
+	{
 		//Jumping
-				
+
 		//Max Jump Height depending on NotMario's speed.
 		isMaxSpeed();
-		
+
 		//Makes NotMario's jump for a longer duration if 'Z' is held down.
 		if(Input.GetKeyDown(KeyCode.X))
 		{
@@ -121,37 +135,20 @@ public class PlayerControls : MonoBehaviour {
 			stoppedJumping = true;
 		}
 		
-	if(health == 0 || transform.position.y < -1.5f)
-	{
-		//Currently using the scene "Gregg" as the main scene
-		SceneManager.LoadScene("Gregg");
-		lives--;
-	}
-
-        //End of Update()
-	}
-	
-	//FixedUpdate=============================================================
-	
-	void FixedUpdate()
-	{
-		
 		//Acceleration, deceleration
 
         if(Input.GetKey(KeyCode.RightArrow))
             moveSpeed = moveSpeed + 0.2f;
-        if(Input.GetKey(KeyCode.LeftArrow))
+        else if(Input.GetKey(KeyCode.LeftArrow))
             moveSpeed = moveSpeed - 0.2f;
 		
 		
-        if(!Input.GetKey(KeyCode.RightArrow) && moveSpeed > 0.0f && moveSpeed > 0.2f)
+        if(!Input.GetKey(KeyCode.RightArrow) && moveSpeed > 0.2f)
             moveSpeed = moveSpeed - 0.2f;
-        if(!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < 0.0f && moveSpeed < -0.2f)
+        else if(!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < -0.2f)
             moveSpeed = moveSpeed + 0.2f;
 		
-        if(!Input.anyKey && moveSpeed > 0.0f && moveSpeed < 0.2f)
-            moveSpeed = 0.0f;
-        if(!Input.anyKey && moveSpeed < 0.0f && moveSpeed > -0.2f)
+        if(!Input.anyKey && -0.2f < moveSpeed && moveSpeed < 0.2f)
             moveSpeed = 0.0f;
 
 
@@ -161,14 +158,14 @@ public class PlayerControls : MonoBehaviour {
 		{
 			if(moveSpeed > 5.0f)
 				moveSpeed = 5.0f;
-			if(moveSpeed < -5.0f)
+			else if(moveSpeed < -5.0f)
 				moveSpeed = -5.0f;
 		}
-		if(Input.GetKey(KeyCode.Z))
+		else
 		{
 			if(moveSpeed > 10.0f)
 				moveSpeed = 10.0f;
-			if(moveSpeed < -10.0f)
+			else if(moveSpeed < -10.0f)
 				moveSpeed = -10.0f;
 		}
 
@@ -188,11 +185,13 @@ public class PlayerControls : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
-			transform.localScale = new Vector3(1.0f, height, 1.0f);
+			//transform.localScale = new Vector3(1.0f, height, 1.0f);
+			transform.localScale = new Vector2(1.0f, height);
 		}
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
-			transform.localScale = new Vector3(-1.0f, height, -1.0f);
+			//transform.localScale = new Vector3(-1.0f, height, -1.0f);
+			transform.localScale = new Vector3(-1.0f, height);
 		}
 		
 		//End of FixedUpdate()
@@ -244,22 +243,26 @@ public class PlayerControls : MonoBehaviour {
 		if (health == 2) {
 			health--;
 			height = 1.0f;
-		}
+		} 
 		else
-			SceneManager.LoadScene("Gregg");
+		{
+			SceneManager.LoadScene ("Gregg");
+		}
 	}
 	
 	void isMaxSpeed()
 	{
 		//Checks if NotMario is running at Max Speed
-		if(moveSpeed == 10.0f || moveSpeed == -10.0f)
+		if (moveSpeed == 10.0f || moveSpeed == -10.0f)
+		{
 			maxSpeed = true;
-		if(moveSpeed != 10.0f || moveSpeed != -10.0f)
-			maxSpeed = false;
-		if(maxSpeed)
 			jumpForce = 16;
-		if(!maxSpeed)
+		}
+		else
+		{
+			maxSpeed = false;
 			jumpForce = 15;
+		}
 	}
 
     //Displays the Ground Point
