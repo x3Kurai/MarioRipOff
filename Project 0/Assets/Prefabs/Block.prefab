@@ -22,7 +22,7 @@ GameObject:
   - 212: {fileID: 212000010773383036}
   - 50: {fileID: 50000013454793764}
   - 61: {fileID: 61000011267294446}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013655763396}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.59325, y: 3.9215546, z: 0}
+  m_LocalPosition: {x: 134.5, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -67,7 +67,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1000013655763396}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}

@@ -22,7 +22,7 @@ GameObject:
   - 212: {fileID: 212000010179434908}
   - 50: {fileID: 50000012608626006}
   - 61: {fileID: 61000012638676014}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1000011507161178}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}

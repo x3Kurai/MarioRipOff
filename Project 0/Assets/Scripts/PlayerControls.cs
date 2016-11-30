@@ -16,6 +16,7 @@ public class PlayerControls : MonoBehaviour {
 	public bool stoppedJumping;
 	public bool maxSpeed;
 	public float xValue;
+	public float direction;
 
 	
 	public GameObject camera;
@@ -53,6 +54,7 @@ public class PlayerControls : MonoBehaviour {
 		//lives = 3;
 		height = 1.0f;
 		fireFlower = false;
+		direction = 1.0f;
 		
 		//ridgedbody
 		rb2D = GetComponent<Rigidbody2D>();
@@ -67,30 +69,9 @@ public class PlayerControls : MonoBehaviour {
 	void Update()
 	{	
 		checkGrounded ();
-		//Checks if Grounded
-		//if(Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) ||
-		//	Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) ||
-		//	Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
-		//{
-		//	isGrounded = true;		
-		//}
-		
-		//if(!Physics2D.OverlapCircle(groundPoint.position, radius, groundMask) &&
-		//	!Physics2D.OverlapCircle(groundPointLeft.position, radius, groundMask) &&
-		//	!Physics2D.OverlapCircle(groundPointRight.position, radius, groundMask))
-		//{
-		//	isGrounded = false;		
-		//}
 		
 		if(isGrounded)
 			jumpTimeCounter = jumpTime;
-		
-		
-		//Checks if NotMario is running at Max Speed
-		//if(moveSpeed == 10.0f || moveSpeed == -10.0f)
-		//	maxSpeed = true;
-		//if(moveSpeed != 10.0f || moveSpeed != -10.0f)
-		//	maxSpeed = false;
 
 		
 	if(transform.position.y < -1.5f)
@@ -136,24 +117,25 @@ public class PlayerControls : MonoBehaviour {
 		}
 		
 		//Acceleration, deceleration
-
-        if(Input.GetKey(KeyCode.RightArrow))
-            moveSpeed = moveSpeed + 0.2f;
-        else if(Input.GetKey(KeyCode.LeftArrow))
-            moveSpeed = moveSpeed - 0.2f;
+		if(!Input.GetKey(KeyCode.DownArrow))
+		{
+			if(Input.GetKey(KeyCode.RightArrow))
+				moveSpeed = moveSpeed + 0.2f;
+			if(Input.GetKey(KeyCode.LeftArrow))
+				moveSpeed = moveSpeed - 0.2f;
+		}
 		
 		
         if(!Input.GetKey(KeyCode.RightArrow) && moveSpeed > 0.2f)
             moveSpeed = moveSpeed - 0.2f;
-        else if(!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < -0.2f)
+        if(!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < -0.2f)
             moveSpeed = moveSpeed + 0.2f;
 		
-        if(!Input.anyKey && -0.2f < moveSpeed && moveSpeed < 0.2f)
+        if(!Input.GetKey(KeyCode.RightArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f || !Input.GetKey(KeyCode.LeftArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f )
             moveSpeed = 0.0f;
 
 
         //Speed cap
-		
 		if(!Input.GetKey(KeyCode.Z))
 		{
 			if(moveSpeed > 5.0f)
@@ -170,11 +152,11 @@ public class PlayerControls : MonoBehaviour {
 		}
 
 
-		//left and right movement
-		
-		if((xValue + 15.0f) <= cam_xVal)
+		//Locks player to stay on screen
+		if((xValue + 19.0f) <= cam_xVal)
 			moveSpeed = 1.0f;
-	
+		
+		//Left and right movements
 		Vector2 moveDir = new Vector2(moveSpeed, rb2D.velocity.y);
 		rb2D.velocity = moveDir;
 		
@@ -182,17 +164,30 @@ public class PlayerControls : MonoBehaviour {
 		//Jumping
 
 		//Flips the character depending on their horizontal movement
-
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-		{
-			//transform.localScale = new Vector3(1.0f, height, 1.0f);
-			transform.localScale = new Vector2(1.0f, height);
-		}
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-		{
-			//transform.localScale = new Vector3(-1.0f, height, -1.0f);
-			transform.localScale = new Vector3(-1.0f, height);
-		}
+		if(health == 2)
+			height = 2.0f;
+		
+		if(Input.GetKey(KeyCode.RightArrow))
+			direction = 1.0f;
+		else if(Input.GetKey(KeyCode.LeftArrow))
+			direction = -1.0f;
+		if(Input.GetKey(KeyCode.DownArrow))
+			height = 1.0f;
+		
+		transform.localScale = new Vector2(direction, height);
+			
+        //if(Input.GetKey(KeyCode.RightArrow))
+		//{
+		//	transform.localScale = new Vector2(1.0f, height);
+		//}
+        //else if (Input.GetKey(KeyCode.LeftArrow))
+		//{
+		//	transform.localScale = new Vector2(-1.0f, height);
+		//}
+		//else if(Input.GetKey(KeyCode.DownArrow)
+		//{
+		//	transform.localScale += new Vector2(0.0f, );
+		//}
 		
 		//End of FixedUpdate()
 	}
@@ -201,30 +196,13 @@ public class PlayerControls : MonoBehaviour {
 	{	
 		xValue = transform.position.x;
 		cam_xVal = access.cam_xValue;
+		
+		//End of LateUpdate()
 	}
 	
 	
 	//Misc====================================================================
 	
-	//void OnTriggerEnter(Collider other)
-	//{
-	//	if(other.gameObject.CompareTag("Mushroom"))
-	//	{
-	//		other.gameObject.SetActive(false);
-	//		if(health == 1)
-	//		{
-	//			health++;
-	//		}
-	//	}
-	//	if(other.gameObject.CompareTag("FireFlower"))
-	//	{
-	//		if(health == 1)
-	//		{
-	//			health++;
-	//		}
-	//	}
-	//}
-		
 	void OnCollisionEnter2D(Collision2D col)
 	{
 		if(col.gameObject.tag == "Enemies")
@@ -235,6 +213,15 @@ public class PlayerControls : MonoBehaviour {
 		if (col.gameObject.tag == "Mushroom") {
 			health = 2;
 			height = 2.0f;
+			col.gameObject.SetActive(false);
+		}
+		
+		if(col.gameObject.tag == "Fireflower")
+		{
+			health = 2;
+			height = 2.0f;
+			fireFlower = true;
+			col.gameObject.SetActive(false);
 		}
 	}
 	
@@ -243,6 +230,7 @@ public class PlayerControls : MonoBehaviour {
 		if (health == 2) {
 			health--;
 			height = 1.0f;
+			fireFlower = false;
 		} 
 		else
 		{
@@ -253,29 +241,30 @@ public class PlayerControls : MonoBehaviour {
 	void isMaxSpeed()
 	{
 		//Checks if NotMario is running at Max Speed
-		if (moveSpeed == 10.0f || moveSpeed == -10.0f)
+		if (moveSpeed < 11.0f && moveSpeed > 9.0f || moveSpeed > -11.0f && moveSpeed < -9.0f)
 		{
 			maxSpeed = true;
-			jumpForce = 16;
+			jumpForce = 15.0f;
 		}
 		else
 		{
 			maxSpeed = false;
-			jumpForce = 15;
+			jumpForce = 14.5f;
 		}
 	}
 
     //Displays the Ground Point
 
-	void OnDrawGizmos()
-	{
-		Gizmos.color = Color.blue;
-		Gizmos.DrawWireSphere (groundPoint.position, radius);
-	}
+	//void OnDrawGizmos()
+	//{
+	//	Gizmos.color = Color.blue;
+	//	Gizmos.DrawWireSphere (groundPoint.position, radius);
+	//}
 
+	//Checks if Grounded
+	
 	void checkGrounded()
 	{
-		//Checks if Grounded
 		if (Physics2D.OverlapCircle (groundPoint.position, radius, groundMask) ||
 		   Physics2D.OverlapCircle (groundPointLeft.position, radius, groundMask) ||
 		   Physics2D.OverlapCircle (groundPointRight.position, radius, groundMask))
