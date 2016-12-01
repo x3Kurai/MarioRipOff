@@ -714,6 +714,11 @@ Prefab:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 61000014026743496, guid: 8dabb1de160c8b14fbf21f1ca89440ab,
+        type: 2}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_IsPrefabParent: 0
@@ -2104,7 +2109,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 450247016}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
@@ -5400,6 +5405,11 @@ Prefab:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 61000014026743496, guid: 8dabb1de160c8b14fbf21f1ca89440ab,
+        type: 2}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_IsPrefabParent: 0
@@ -5485,7 +5495,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1108232223}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.5, y: 6, z: -10}
+  m_LocalPosition: {x: 15.5, y: 6, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -7220,7 +7230,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1445266628}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
@@ -8777,6 +8787,7 @@ MonoBehaviour:
   stoppedJumping: 0
   maxSpeed: 0
   xValue: 0
+  direction: 0
   camera: {fileID: 1108232223}
   health: 0
   height: 0

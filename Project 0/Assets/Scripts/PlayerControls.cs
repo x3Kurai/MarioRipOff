@@ -153,7 +153,7 @@ public class PlayerControls : MonoBehaviour {
 
 
 		//Locks player to stay on screen
-		if((xValue + 19.0f) <= cam_xVal)
+		if((xValue + 15.0f) <= cam_xVal)
 			moveSpeed = 1.0f;
 		
 		//Left and right movements
