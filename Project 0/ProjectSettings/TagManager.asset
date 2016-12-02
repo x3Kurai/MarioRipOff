@@ -9,6 +9,7 @@ TagManager:
   - Mushroom
   - DeadEnemies
   - Fireflower
+  - Invincible
   layers:
   - Default
   - TransparentFX

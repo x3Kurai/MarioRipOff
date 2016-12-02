@@ -32,30 +32,25 @@ public class GoombaAI : MonoBehaviour {
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col)
-    {
+      void OnCollisionEnter2D(Collision2D col)
+      {
         if (col.gameObject.tag == "Player")
         {
-
-            float height = col.contacts[0].point.y - weakness.position.y;
-			transform.gameObject.tag = "DeadEnemies";
-
-            if (height > 0)
+            if (col.gameObject.transform.position.y >= transform.position.y + .7)
             {
-                Dies();
-                col.rigidbody.AddForce(new Vector2(0, 200)); //float value for how high you bounce off
-
-
-            }
+                  col.rigidbody.AddForce(new Vector2(0, 400));
+                  transform.gameObject.tag = "DeadEnemies";
+                  Dies();
+             }
 
 
         }
 
 
-    }
+      }
 
-    void Dies()
+        void Dies()
     {
-        Destroy(this.gameObject, 0.5f); //float value for when it dies
+        Destroy(this.gameObject, 0.2f); //float value for when it dies
     }
 }
