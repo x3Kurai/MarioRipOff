@@ -8716,6 +8716,7 @@ GameObject:
   - 50: {fileID: 1796334615}
   - 114: {fileID: 1796334614}
   - 114: {fileID: 1796334616}
+  - 95: {fileID: 1796334620}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8756,6 +8757,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+  _currentAnimationState: 0
 --- !u!50 &1796334615
 Rigidbody2D:
   serializedVersion: 2
@@ -8833,7 +8835,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12399d2706f232a439d099bc67cb99ad, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6d3b757e37f0d184e9c436e5de295d18, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8853,6 +8855,23 @@ Transform:
   - {fileID: 2036205107}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!95 &1796334620
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1796334613}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b2a6f2e495921214c893cc038c7f5936, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &1796916371
 Prefab:
   m_ObjectHideFlags: 0

@@ -23,7 +23,6 @@ GameObject:
   - 50: {fileID: 50000011433312802}
   - 61: {fileID: 61000013787942936}
   - 114: {fileID: 114000011422295296}
-  - 58: {fileID: 58000013303942888}
   m_Layer: 0
   m_Name: Goomba
   m_TagString: Enemies
@@ -148,20 +147,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &58000013303942888
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012052873624}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.5}
-  serializedVersion: 2
-  m_Radius: 0.45815277
 --- !u!61 &61000013787942936
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -170,9 +155,9 @@ BoxCollider2D:
   m_GameObject: {fileID: 1000012052873624}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 22864d1b833eba0449d388576166a2e3, type: 2}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}

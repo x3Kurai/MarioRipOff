@@ -24,7 +24,6 @@ public class PlayerControls : MonoBehaviour
     private CameraControls access;
     private float cam_xVal;
 
-
     //status
     public int health;
     public float height;
@@ -37,6 +36,12 @@ public class PlayerControls : MonoBehaviour
     public Transform groundPointRight;
     public float radius;
     public LayerMask groundMask;
+
+    Animator animator;
+    const int STATE_IDLE = 0;
+    const int STATE_WALKING = 1;
+    const int STATE_RUNNING = 2;
+    public int _currentAnimationState = STATE_IDLE;
 
     Rigidbody2D rb2D;
 
@@ -63,6 +68,8 @@ public class PlayerControls : MonoBehaviour
         //Others
         access = camera.GetComponent<CameraControls>();
         cam_xVal = access.cam_xValue;
+
+        animator = this.GetComponent<Animator>();
     }
 
     //Update=============================================================
@@ -81,7 +88,6 @@ public class PlayerControls : MonoBehaviour
             SceneManager.LoadScene("Gregg");
             lives--;
         }
-
         //End of Update()
     }
 
@@ -89,6 +95,8 @@ public class PlayerControls : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(moveSpeed == 0 && isGrounded)
+            changeState(STATE_IDLE);
         //Jumping
 
         //Max Jump Height depending on NotMario's speed.
@@ -121,9 +129,15 @@ public class PlayerControls : MonoBehaviour
         if (!Input.GetKey(KeyCode.DownArrow))
         {
             if (Input.GetKey(KeyCode.RightArrow))
+            {
                 moveSpeed = moveSpeed + 0.2f;
+                changeState(STATE_WALKING);
+            }
             if (Input.GetKey(KeyCode.LeftArrow))
+            {
                 moveSpeed = moveSpeed - 0.2f;
+                changeState(STATE_WALKING);
+            }
         }
 
 
@@ -168,27 +182,28 @@ public class PlayerControls : MonoBehaviour
         if (health == 2)
             height = 2.0f;
 
-        if (Input.GetKey(KeyCode.RightArrow))
-            direction = 1.0f;
-        else if (Input.GetKey(KeyCode.LeftArrow))
-            direction = -1.0f;
+        //if (Input.GetKey(KeyCode.RightArrow))
+        //{
+        //    direction = 1.0f;          
+        //}
+        //else if (Input.GetKey(KeyCode.LeftArrow))
+        //{
+        //    direction = -1.0f;
+        //}
         if (Input.GetKey(KeyCode.DownArrow))
             height = 1.0f;
 
         transform.localScale = new Vector2(direction, height);
 
-        //if(Input.GetKey(KeyCode.RightArrow))
-        //{
-        //	transform.localScale = new Vector2(1.0f, height);
-        //}
-        //else if (Input.GetKey(KeyCode.LeftArrow))
-        //{
-        //	transform.localScale = new Vector2(-1.0f, height);
-        //}
-        //else if(Input.GetKey(KeyCode.DownArrow)
-        //{
-        //	transform.localScale += new Vector2(0.0f, );
-        //}
+        if(Input.GetKey(KeyCode.RightArrow))
+        {
+        	transform.localScale = new Vector2(1.0f, height);
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+        	transform.localScale = new Vector2(-1.0f, height);
+        }
+        
 
         //End of FixedUpdate()
 
@@ -304,5 +319,26 @@ public class PlayerControls : MonoBehaviour
     void resetTime()
     {
         Time.timeScale = 1.0f;
+    }
+    void changeState(int state)
+    {
+
+        if (_currentAnimationState == state)
+            return;
+        switch (state)
+        {
+            case STATE_IDLE:
+                animator.SetInteger("state", STATE_IDLE);
+                break;
+            case STATE_WALKING:
+                animator.SetInteger("state", STATE_WALKING);
+                break;
+
+            case STATE_RUNNING:
+                animator.SetInteger("state", STATE_RUNNING);
+                break;
+
+        }
+        _currentAnimationState = state;
     }
 }
