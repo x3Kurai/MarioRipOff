@@ -10,6 +10,8 @@ TagManager:
   - DeadEnemies
   - Fireflower
   - Invincible
+  - Flagpole
+  - InCastle
   layers:
   - Default
   - TransparentFX

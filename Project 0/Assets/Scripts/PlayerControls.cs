@@ -29,6 +29,7 @@ public class PlayerControls : MonoBehaviour
     public float height;
     public bool fireFlower;
     public int lives;
+	public bool touchedFlag;
 
     //grounded
     public Transform groundPoint;
@@ -61,6 +62,7 @@ public class PlayerControls : MonoBehaviour
         height = 1.0f;
         fireFlower = false;
         direction = 1.0f;
+		touchedFlag = false;
 
         //ridgedbody
         rb2D = GetComponent<Rigidbody2D>();
@@ -95,130 +97,128 @@ public class PlayerControls : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(moveSpeed == 0 && isGrounded)
-            changeState(STATE_IDLE);
-        //Jumping
+		if (!touchedFlag) {
+			if (moveSpeed == 0 && isGrounded)
+				changeState (STATE_IDLE);
+			//Jumping
 
-        //Max Jump Height depending on NotMario's speed.
-        isMaxSpeed();
+			//Max Jump Height depending on NotMario's speed.
+			isMaxSpeed ();
 
-        //Makes NotMario's jump for a longer duration if 'Z' is held down.
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            if (isGrounded)
-            {
-                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
-                stoppedJumping = false;
-            }
-        }
-        if (Input.GetKey(KeyCode.X) && !stoppedJumping)
-        {
-            if (jumpTimeCounter > 0)
-            {
-                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-        }
-        if (Input.GetKeyUp(KeyCode.X))
-        {
-            jumpTimeCounter = 0;
-            stoppedJumping = true;
-        }
+			//Makes NotMario's jump for a longer duration if 'Z' is held down.
+			if (Input.GetKeyDown (KeyCode.X)) {
+				if (isGrounded) {
+					rb2D.velocity = new Vector2 (rb2D.velocity.x, jumpForce);
+					stoppedJumping = false;
+				}
+			}
+			if (Input.GetKey (KeyCode.X) && !stoppedJumping) {
+				if (jumpTimeCounter > 0) {
+					rb2D.velocity = new Vector2 (rb2D.velocity.x, jumpForce);
+					jumpTimeCounter -= Time.deltaTime;
+				}
+			}
+			if (Input.GetKeyUp (KeyCode.X)) {
+				jumpTimeCounter = 0;
+				stoppedJumping = true;
+			}
 
-        //Acceleration, deceleration
-        if (!Input.GetKey(KeyCode.DownArrow))
-        {
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveSpeed = moveSpeed + 0.2f;
-                changeState(STATE_WALKING);
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveSpeed = moveSpeed - 0.2f;
-                changeState(STATE_WALKING);
-            }
-        }
+			//Acceleration, deceleration
+			if (!Input.GetKey (KeyCode.DownArrow)) {
+				if (Input.GetKey (KeyCode.RightArrow)) {
+					moveSpeed = moveSpeed + 0.2f;
+					changeState (STATE_WALKING);
+				}
+				if (Input.GetKey (KeyCode.LeftArrow)) {
+					moveSpeed = moveSpeed - 0.2f;
+					changeState (STATE_WALKING);
+				}
+			}
 
 
-        if (!Input.GetKey(KeyCode.RightArrow) && moveSpeed > 0.2f)
-            moveSpeed = moveSpeed - 0.2f;
-        if (!Input.GetKey(KeyCode.LeftArrow) && moveSpeed < -0.2f)
-            moveSpeed = moveSpeed + 0.2f;
+			if (!Input.GetKey (KeyCode.RightArrow) && moveSpeed > 0.2f)
+				moveSpeed = moveSpeed - 0.2f;
+			if (!Input.GetKey (KeyCode.LeftArrow) && moveSpeed < -0.2f)
+				moveSpeed = moveSpeed + 0.2f;
 
-        if (!Input.GetKey(KeyCode.RightArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f || !Input.GetKey(KeyCode.LeftArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f)
-            moveSpeed = 0.0f;
-
-
-        //Speed cap
-        if (!Input.GetKey(KeyCode.Z))
-        {
-            if (moveSpeed > 5.0f)
-                moveSpeed = 5.0f;
-            else if (moveSpeed < -5.0f)
-                moveSpeed = -5.0f;
-        }
-        else
-        {
-            if (moveSpeed > 10.0f)
-                moveSpeed = 10.0f;
-            else if (moveSpeed < -10.0f)
-                moveSpeed = -10.0f;
-        }
+			if (!Input.GetKey (KeyCode.RightArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f || !Input.GetKey (KeyCode.LeftArrow) && -0.2f < moveSpeed && moveSpeed < 0.2f)
+				moveSpeed = 0.0f;
 
 
-        //Locks player to stay on screen
-        if ((xValue + 15.0f) <= cam_xVal)
-            moveSpeed = 1.0f;
+			//Speed cap
+			if (!Input.GetKey (KeyCode.Z)) {
+				if (moveSpeed > 5.0f)
+					moveSpeed = 5.0f;
+				else if (moveSpeed < -5.0f)
+					moveSpeed = -5.0f;
+			} else {
+				if (moveSpeed > 10.0f)
+					moveSpeed = 10.0f;
+				else if (moveSpeed < -10.0f)
+					moveSpeed = -10.0f;
+			}
 
-        //Left and right movements
-        Vector2 moveDir = new Vector2(moveSpeed, rb2D.velocity.y);
-        rb2D.velocity = moveDir;
+
+			//Locks player to stay on screen
+			if ((xValue + 15.0f) <= cam_xVal)
+				moveSpeed = 1.0f;
+
+			//Left and right movements
+			Vector2 moveDir = new Vector2 (moveSpeed, rb2D.velocity.y);
+			rb2D.velocity = moveDir;
 
 
-        //Jumping
+			//Jumping
 
-        //Flips the character depending on their horizontal movement
-        if (health == 2)
-            height = 2.0f;
+			//Flips the character depending on their horizontal movement
+			if (health == 2)
+				height = 2.0f;
 
-        //if (Input.GetKey(KeyCode.RightArrow))
-        //{
-        //    direction = 1.0f;          
-        //}
-        //else if (Input.GetKey(KeyCode.LeftArrow))
-        //{
-        //    direction = -1.0f;
-        //}
-        if (Input.GetKey(KeyCode.DownArrow))
-            height = 1.0f;
+			//if (Input.GetKey(KeyCode.RightArrow))
+			//{
+			//    direction = 1.0f;          
+			//}
+			//else if (Input.GetKey(KeyCode.LeftArrow))
+			//{
+			//    direction = -1.0f;
+			//}
+			if (Input.GetKey (KeyCode.DownArrow))
+				height = 1.0f;
 
-        transform.localScale = new Vector2(direction, height);
+			transform.localScale = new Vector2 (direction, height);
 
-        if(Input.GetKey(KeyCode.RightArrow))
-        {
-        	transform.localScale = new Vector2(1.0f, height);
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-        	transform.localScale = new Vector2(-1.0f, height);
-        }
+			if (Input.GetKey (KeyCode.RightArrow)) {
+				transform.localScale = new Vector2 (1.0f, height);
+			} else if (Input.GetKey (KeyCode.LeftArrow)) {
+				transform.localScale = new Vector2 (-1.0f, height);
+			}
         
 
-        //End of FixedUpdate()
+			//End of FixedUpdate()
 
-        if (invincible)
-        {
-            GetComponent<Renderer>().material.color = Color.blue;
-            transform.gameObject.tag = "Invincible";
-            Invoke("resetInvulnerability", 2);
-        }
+			if (invincible) {
+				GetComponent<Renderer> ().material.color = Color.blue;
+				transform.gameObject.tag = "Invincible";
+				Invoke ("resetInvulnerability", 2);
+			}
+		} 
+
+		else { //touchedFlag
+			if (!isGrounded) {
+				rb2D.velocity = new Vector2 (0.0f, -2.0f);
+			} 
+			else {
+				rb2D.velocity = new Vector2 (3.0f, 0.0f);
+			}
+		}
     }
 
     void LateUpdate()
     {
-        xValue = transform.position.x;
-        cam_xVal = access.cam_xValue;
+		if (!touchedFlag) {
+			xValue = transform.position.x;
+			cam_xVal = access.cam_xValue;
+		}
 
         //End of LateUpdate()
     }
@@ -250,6 +250,17 @@ public class PlayerControls : MonoBehaviour
             fireFlower = true;
             col.gameObject.SetActive(false);
         }
+
+		if (col.gameObject.CompareTag("Flagpole")) {
+			touchedFlag = true;
+			col.gameObject.SetActive (false);
+		}
+
+		if (col.gameObject.CompareTag("InCastle")) {
+			if (touchedFlag) {
+				touchedFlag = false;
+			}
+		}
     }
 
     void PlayerHit()
